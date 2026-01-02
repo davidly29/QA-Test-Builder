@@ -1,43 +1,13 @@
 pipeline {
   agent any
-  triggers { cron('H H * * *') } // daily
-  options { timestamps(); ansiColor('xterm') }
-
-  environment {
-    PROJECT_DIR = "examples/simple-junit"
-    SERENITY_DIR = "examples/simple-junit/target/site/serenity"
-  }
+  options { timestamps() }
 
   stages {
-    stage('Checkout') {
-      steps { checkout scm }
-    }
-
-    stage('Run tests (container)') {
+    stage('Sanity') {
       steps {
-        sh '''
-          docker run --rm \
-            -v /var/jenkins_home:/var/jenkins_home \
-            -e WORKSPACE=${WORKSPACE} \
-            -w ${WORKSPACE}/${PROJECT_DIR} \
-            qa/test-runner:latest
-        '''
-      }
-    }
-
-    stage('Publish Serenity Report') {
-      steps {
-        publishHTML(target: [
-          reportDir: "${SERENITY_DIR}",
-          reportFiles: "index.html",
-          reportName: "Serenity Report",
-          keepAll: true,
-          alwaysLinkToLastBuild: true
-        ])
-        archiveArtifacts artifacts: "${SERENITY_DIR}/**", fingerprint: true
+        echo "Hello from Jenkins"
+        sh 'pwd && ls -la'
       }
     }
   }
-
-  // Add email later once SMTP is configured
 }
