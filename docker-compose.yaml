@@ -1,0 +1,27 @@
+version: "3.9"
+
+services:
+  test-runner:
+    build:
+      context: ./docker/test-runner
+      dockerfile: Dockerfile
+    image: qa/test-runner:latest
+    container_name: qa-test-runner
+    volumes:
+      - ./examples:/workspace/examples
+    working_dir: /workspace/examples/simple-junit
+  jenkins:
+    build:
+      context: ./docker/jenkins
+      dockerfile: Dockerfile
+    container_name: qa-jenkins
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - JAVA_OPTS=-Djenkins.install.runSetupWizard=false
+volumes:
+  jenkins_home:
