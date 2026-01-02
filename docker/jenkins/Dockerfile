@@ -9,8 +9,5 @@ RUN apt-get update && \
     apt-get install -y docker.io && \
     rm -rf /var/lib/apt/lists/*
 
-# Back to Jenkins user
-USER jenkins
-
 # Copy any Groovy init scripts (creates admin user etc.)
 COPY init.groovy.d/ /usr/share/jenkins/ref/init.groovy.d/
